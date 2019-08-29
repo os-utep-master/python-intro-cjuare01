@@ -35,6 +35,7 @@ class WordCount():
                 #if a period was found inside the word, strip it
                 if re.search('.', word):
                     word = word.strip('.')
+                word = word.lower()
                 #if the word is not found in the dictionary it inserts the word and set's it to 0
                 if not word in self.wordDict:
                     self.wordDict[word] = 0
