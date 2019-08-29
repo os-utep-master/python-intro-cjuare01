@@ -1,3 +1,4 @@
+import collections
 import logging
 import sys
 import re
@@ -11,6 +12,7 @@ class WordCount():
     def __init__(self):
         logging.debug('init(): Instantiated')
         self.read()
+        self.write_output()
         logging.debug('init(): Complete')
 
     def read(self):
@@ -18,6 +20,7 @@ class WordCount():
         inputFile = open(self.inputFileName, 'r')
         inputFileLine = inputFile.readlines()
         self.line_manipulation(inputFileLine)
+        inputFile.close()
         logging.debug('read(): Complete')
         return 0
 
@@ -29,12 +32,25 @@ class WordCount():
                 #if a new line was found inside the word, strip it
                 if re.search('\n', word):
                     word = word.rstrip()
+                #if a apostrophe was found inside the word, strip it
+                if re.search("'", word):
+                    word = word.replace("'", '') #split again
                 #if a comma was found inside the word, strip it
                 if re.search(',', word):
                     word = word.strip(',')
                 #if a period was found inside the word, strip it
                 if re.search('.', word):
-                    word = word.strip('.')
+                    word = word.replace('.', '') #split again
+                #if a colon was found inside the word, strip it
+                if re.search(':', word):
+                    word = word.strip(':')
+                #if a semi-colon was found inside the word, strip it
+                if re.search(';', word):
+                    word = word.strip(';')
+                #if a hyphen was found inside the word, strip it
+                if re.search('-', word):
+                    word = word.replace('-', '') #split again
+                #converts everything to lower case
                 word = word.lower()
                 #if the word is not found in the dictionary it inserts the word and set's it to 0
                 if not word in self.wordDict:
@@ -42,10 +58,22 @@ class WordCount():
                 #when a word is found it increases it's value by one
                 if word in self.wordDict:
                     self.wordDict[word] += 1
-            logging.debug(tempList)
-            logging.debug(line)
+        self.wordDict = collections.OrderedDict(sorted(self.wordDict.items()))
+        del self.wordDict['']
         logging.debug(self.wordDict)
         logging.debug('line_manipulation(): Complete')
+        return 0
+    
+    def write_output(self):
+        logging.debug('write_output(): Instantiated')
+        outputFile = open('myOutput.txt', 'w+')
+        for word in self.wordDict:
+            #print(''+word+' '+str(self.wordDict[word])+'\n')
+            #print(word)
+            outputFile.write(''+word+' '+str(self.wordDict[word])+'\n')
+        #os.fsync(outputFile)
+        #outputFile.close()
+        logging.debug('write_output(): Complete')
         return 0
 
 if __name__ == '__main__':
