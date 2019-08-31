@@ -27,30 +27,11 @@ class WordCount():
     def line_manipulation(self, inputFileLine):
         logging.debug('line_manipulation(): Instantiated')
         for line in inputFileLine:
-            tempList = re.split(' ', line)
+            tempList = re.split('\W+', line)
             for word in tempList:
                 #if a new line was found inside the word, strip it
                 if re.search('\n', word):
                     word = word.rstrip()
-                #if a apostrophe was found inside the word, strip it
-                if re.search("'", word):
-                    word = word.replace("'", '') #split again
-                #if a comma was found inside the word, strip it
-                if re.search(',', word):
-                    word = word.strip(',')
-                #if a period was found inside the word, strip it
-                if re.search('.', word):
-                    word = word.replace('.', '') #split again
-                #if a colon was found inside the word, strip it
-                if re.search(':', word):
-                    word = word.strip(':')
-                #if a semi-colon was found inside the word, strip it
-                if re.search(';', word):
-                    word = word.strip(';')
-                #if a hyphen was found inside the word, strip it
-                if re.search('-', word):
-                    word = word.replace('-', '') #split again
-                #converts everything to lower case
                 word = word.lower()
                 #if the word is not found in the dictionary it inserts the word and set's it to 0
                 if not word in self.wordDict:
@@ -68,11 +49,9 @@ class WordCount():
         logging.debug('write_output(): Instantiated')
         outputFile = open('myOutput.txt', 'w+')
         for word in self.wordDict:
-            #print(''+word+' '+str(self.wordDict[word])+'\n')
-            #print(word)
-            outputFile.write(''+word+' '+str(self.wordDict[word])+'\n')
+            outputFile.write(word+' '+str(self.wordDict[word])+'\n')
         #os.fsync(outputFile)
-        #outputFile.close()
+        outputFile.close()
         logging.debug('write_output(): Complete')
         return 0
 
